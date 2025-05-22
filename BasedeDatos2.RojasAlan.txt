@@ -1,0 +1,271 @@
+// punto 1.
+
+use cafeteria
+
+db.createCollection("cafes_especiales")
+
+db.cafes_especiales.insertMany([
+  {
+    tipo: "espresso",
+    ingredientes: ["chocolate"],
+    peso: 30,
+    intensidad: "alta",
+    precio: [
+      { tipo: "efectivo", precio: 500 },
+      { tipo: "tarjeta", precio: 600 }
+    ],
+    contiene_leche: false,
+    tostador: {
+      localidad: "buenos aires",
+      nombre: "tostado sur",
+      cuit: "25-12542-9"
+    }
+  },
+  {
+    tipo: "filtrado",
+    ingredientes: ["vainilla-canela"],
+    peso: 250,
+    intensidad: "media",
+    precio: [
+      { tipo: "efectivo", precio: 600 },
+      { tipo: "tarjeta", precio: 700 }
+    ],
+    contiene_leche: true,
+    tostador: {
+      localidad: "cordoba",
+      nombre: "cafe alto",
+      cuit: "25-91232-2"
+    }
+  },
+  {
+    tipo: "cold brew",
+    ingredientes: ["caramelo"],
+    peso: 90,
+    intensidad: "baja",
+    precio: [
+      { tipo: "efectivo", precio: 700 },
+      { tipo: "tarjeta", precio: 800 }
+    ],
+    contiene_leche: true,
+    tostador: {
+      localidad: "mendoza",
+      nombre: "frio montañez",
+      cuit: "25-89122-8"
+    }
+  },
+  {
+    tipo: "descafeinado",
+    ingredientes: ["chocolate", "caramelo"],
+    peso: 120,
+    intensidad: "baja",
+    precio: [
+      { tipo: "efectivo", precio: 900 },
+      { tipo: "tarjeta", precio: 1000 }
+    ],
+    contiene_leche: true,
+    tostador: {
+      localidad: "rosario",
+      nombre: "diabetes co",
+      cuit: "25-69121-1"
+    }
+  },
+  {
+    tipo: "espresso",
+    ingredientes: ["vainilla-canela"],
+    peso: 1289,
+    intensidad: "alta",
+    precio: [
+      { tipo: "efectivo", precio: 200 },
+      { tipo: "tarjeta", precio: 300 }
+    ],
+    contiene_leche: false,
+    tostador: {
+      localidad: "buenos aires",
+      nombre: "bar la pampa",
+      cuit: "25-53012-4"
+    }
+  },
+  {
+    tipo: "filtrado",
+    ingredientes: ["chocolate"],
+    peso: 12,
+    intensidad: "media",
+    precio: [
+      { tipo: "efectivo", precio: 500 },
+      { tipo: "tarjeta", precio: 800 }
+    ],
+    contiene_leche: true,
+    tostador: {
+      localidad: "buenos aires",
+      nombre: "del bosque",
+      cuit: "25-51252-7"
+    }
+  },
+  {
+    tipo: "cold brew",
+    ingredientes: ["caramelo"],
+    peso: 210,
+    intensidad: "baja",
+    precio: [
+      { tipo: "efectivo", precio: 600 },
+      { tipo: "tarjeta", precio: 700 }
+    ],
+    contiene_leche: false,
+    tostador: {
+      localidad: "santa fe",
+      nombre: "del bosque",
+      cuit: "25-41252-6"
+    }
+  },
+  {
+    tipo: "descafeinado",
+    ingredientes: ["vainilla-canela", "chocolate"],
+    peso: 150,
+    intensidad: "media",
+    precio: [
+      { tipo: "efectivo", precio: 1 },
+      { tipo: "tarjeta", precio: 2 }
+    ],
+    contiene_leche: false,
+    tostador: {
+      localidad: "mendoza",
+      nombre: "cafe alto",
+      cuit: "25-21251-7"
+    }
+  },
+  {
+    tipo: "espresso",
+    ingredientes: ["chocolate"],
+    peso: 290,
+    intensidad: "alta",
+    precio: [
+      { tipo: "efectivo", precio: 32 },
+      { tipo: "tarjeta", precio: 150 }
+    ],
+    contiene_leche: true,
+    tostador: {
+      localidad: "san juan",
+      nombre: "cripta",
+      cuit: "25-83237-8"
+    }
+  },
+  {
+    tipo: "filtrado",
+    ingredientes: ["vainilla-canela", "caramelo"],
+    peso: 10,
+    intensidad: "media",
+    precio: [
+      { tipo: "efectivo", precio: 500 },
+      { tipo: "tarjeta", precio: 600 }
+    ],
+    contiene_leche: true,
+    tostador: {
+      localidad: "mendoza",
+      nombre: "cafe alto",
+      cuit: "25-15551-1"
+    }
+  }
+])
+
+
+
+
+
+
+// punto 2. ==============================================
+
+
+
+db.cafes_especiales.find({ ingredientes: "chocolate" }).count()
+
+
+
+// punto 3. ==============================================
+
+
+
+db.cafes_especiales.find({
+  tipo: "cold brew",
+  ingredientes: { $elemMatch: { $regex: "vainilla", $options: "i" } }
+}).count()
+
+
+
+// punto 4. =========================================
+
+
+
+db.cafes_especiales.find(
+	{ intensidad: "media" },
+	{ tipo: 1, peso: 1, _id: 0 }
+
+
+
+
+// punto 5 =============================================
+
+
+
+db.cafes_especiales.find(
+	{ peso: { $gte: 200, $lte: 260 } },
+	{ tipo: 1, peso: 1, intensidad: 1, _id: 0 }
+)
+
+
+
+// punto 6 ===========================================
+
+
+
+db.cafes_especiales.find(
+	{ "tostador.localidad": { $regex: "san", $options: "i"} }
+).sort({peso: -1})
+
+
+
+
+// punto 7 =========================================
+
+
+
+db.cafes_especiales.aggregate([
+	{
+		$group: {
+			_id: "$tipo",
+			totalPeso: { $sum: "$peso" }
+		}
+	}
+])
+
+
+
+// punto 8 ==========================================
+
+
+
+db.cafes_especiales.updateMany(
+	{ intensidad: "alta" },
+	{ $addToSet: { ingredientes: "whisky" } }
+)
+
+
+// punto 9  =======================================
+
+
+db.cafes_especiales.updateMany(
+	{ peso: { $gte: 200, $lte: 260 } }
+	{ $inc: { peso: 10 } }
+)
+
+
+
+// punto 10 ===================================
+
+
+
+db.cafes_especiales.deleteMany(
+	{ peso: { $lte: 210 } }
+)
+
+
+// gg
